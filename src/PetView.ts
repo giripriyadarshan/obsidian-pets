@@ -1,6 +1,6 @@
 // src/PetView.ts
 
-import { ItemView, WorkspaceLeaf } from "obsidian";
+import { ItemView, WorkspaceLeaf, setIcon } from "obsidian";
 import { Pet } from "./pet";
 import { PetSize } from "./types";
 import { Ball } from "./ball";
@@ -127,6 +127,10 @@ export class PetView extends ItemView {
 
 
 	async onOpen() {
+		// --- NATIVE ACTIONS (for wide panels) ---
+		this.addAction('circle', 'Throw ball', () => {
+			this.throwBall();
+		});
 		this.addAction('plus', 'Add a new pet', () => {
 			new PetSuggestModal(this.app, this).open();
 		});
@@ -135,8 +139,21 @@ export class PetView extends ItemView {
 		this.contentEl.style.position = 'relative';
 		this.contentEl.style.height = '100%';
 
-		const addButton = this.contentEl.createEl('button', { text: '+', cls: 'pet-view-add-button' });
+		// --- PERMANENT BUTTONS (for all panel types) ---
+		const buttonContainer = this.contentEl.createDiv({ cls: 'pet-view-button-container' });
+
+		// Throw Ball Button
+		const throwBallButton = buttonContainer.createEl('button', { cls: 'pet-view-action-button' });
+		throwBallButton.setAttribute('aria-label', 'Throw ball');
+		setIcon(throwBallButton, 'circle'); // Use Lucide 'circle' icon
+		throwBallButton.addEventListener('click', () => {
+			this.throwBall();
+		});
+
+		// Add Pet Button
+		const addButton = buttonContainer.createEl('button', { cls: 'pet-view-action-button' });
 		addButton.setAttribute('aria-label', 'Add a new pet');
+		setIcon(addButton, 'plus'); // Use Lucide 'plus' icon
 		addButton.addEventListener('click', () => {
 			new PetSuggestModal(this.app, this).open();
 		});
