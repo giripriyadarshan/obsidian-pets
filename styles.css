@@ -6,3 +6,19 @@ available in the app when your plugin is enabled.
 If your plugin does not need CSS, delete this file.
 
 */
+/* styles.css */
+
+.obsidian-pet {
+	/* This is the most likely fix. It ensures the pet is
+	   rendered as a block-level element and gives it a
+	   stacking order above the background. */
+	display: block;
+	z-index: 1;
+	position: absolute;
+}
+
+.pet-ball {
+	/* Also give the ball a z-index to ensure it appears
+	   above the pet and the background. */
+	z-index: 2;
+}

@@ -66,6 +66,18 @@ export default class MyPlugin extends Plugin {
 			}
 		});
 
+		this.addCommand({
+			id: 'throw-ball',
+			name: 'Throw ball',
+			callback: () => {
+				const leaf = this.app.workspace.getLeavesOfType(PET_VIEW_TYPE)[0];
+				if (leaf) {
+					const petView = leaf.view as PetView;
+					petView.throwBall();
+				}
+			}
+		});
+
 		// This adds a settings tab so the user can configure various aspects of the plugin
 		this.addSettingTab(new PetSettingTab(this.app, this));
 	}

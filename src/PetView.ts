@@ -3,12 +3,14 @@
 import { ItemView, WorkspaceLeaf } from "obsidian";
 import { Pet } from "./pet";
 import { PetSize } from "./types";
+import { Ball } from "./ball";
 
 export const PET_VIEW_TYPE = "pet-view";
 
 export class PetView extends ItemView {
 	// We now have an array of pets
 	private pets: Pet[] = [];
+	private ball: Ball | null = null;
 	private animationFrameId: number;
 
 	constructor(leaf: WorkspaceLeaf) {
@@ -22,8 +24,19 @@ export class PetView extends ItemView {
 	private gameLoop = () => {
 		// Update every pet in the array
 		this.pets.forEach(pet => {
-			pet.update(this.contentEl.offsetWidth);
+			const event = pet.update(this.contentEl.offsetWidth, this.contentEl.offsetHeight, this.ball);
+
+			// Check if the pet caught the ball
+			if (event === 'caught_ball' && this.ball) {
+				this.ball.remove();
+				this.ball = null;
+			}
 		});
+
+		if (this.ball) {
+			this.ball.update(this.contentEl.offsetHeight, this.contentEl.offsetWidth);
+		}
+
 		this.animationFrameId = window.requestAnimationFrame(this.gameLoop);
 	};
 
@@ -100,6 +113,15 @@ export class PetView extends ItemView {
 		this.contentEl.style.backgroundPosition = 'center';
 	}
 
+	throwBall() {
+		if (this.ball) {
+			this.ball.remove();
+		}
+		// Start the ball in the middle of the view
+		this.ball = new Ball(this.app, this.contentEl.offsetWidth / 2, this.contentEl.offsetHeight / 2);
+		this.ball.spawn(this.contentEl);
+	}
+
 
 	async onOpen() {
 		this.contentEl.empty();
@@ -116,6 +138,12 @@ export class PetView extends ItemView {
 	}
 
 	async onClose() {
-		this.clearAllPets(); // Use our new cleanup method
+		if (this.animationFrameId) {
+			window.cancelAnimationFrame(this.animationFrameId);
+		}
+		this.clearAllPets();
+		if (this.ball) {
+			this.ball.remove();
+		}
 	}
 }
