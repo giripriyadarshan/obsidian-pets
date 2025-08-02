@@ -1,11 +1,11 @@
 {
-	"id": "sample-plugin",
-	"name": "Sample Plugin",
+	"id": "obsidian-pets",
+	"name": "Obsidian Pets",
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
-	"description": "Demonstrates some of the capabilities of the Obsidian API.",
-	"author": "Obsidian",
-	"authorUrl": "https://obsidian.md",
-	"fundingUrl": "https://obsidian.md/pricing",
-	"isDesktopOnly": false
+	"description": "Direct translation of vscode-pets to Obsidian. Adds a cute pet to your Obsidian vault that follows you around.",
+	"author": "Priyadarshan Giri <me@giripriyadarshan.com>",
+	"authorUrl": "https://giripriyadarshan.com",
+	"fundingUrl": "https://buymeacoffee.com/priyadarshan",
+	"isDesktopOnly": true
 }
