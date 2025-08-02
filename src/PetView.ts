@@ -135,6 +135,12 @@ export class PetView extends ItemView {
 		this.contentEl.style.position = 'relative';
 		this.contentEl.style.height = '100%';
 
+		const addButton = this.contentEl.createEl('button', { text: '+', cls: 'pet-view-add-button' });
+		addButton.setAttribute('aria-label', 'Add a new pet');
+		addButton.addEventListener('click', () => {
+			new PetSuggestModal(this.app, this).open();
+		});
+
 		const plugin = (this.app as any).plugins.plugins['obsidian-pets'];
 		if (plugin) {
 			this.applyTheme(plugin.settings.theme);

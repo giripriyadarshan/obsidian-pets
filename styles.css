@@ -1,24 +1,33 @@
-/*
-
-This CSS file will be included with your plugin, and
-available in the app when your plugin is enabled.
-
-If your plugin does not need CSS, delete this file.
-
-*/
-/* styles.css */
+/* in styles.css */
 
 .obsidian-pet {
-	/* This is the most likely fix. It ensures the pet is
-	   rendered as a block-level element and gives it a
-	   stacking order above the background. */
 	display: block;
 	z-index: 1;
 	position: absolute;
 }
 
 .pet-ball {
-	/* Also give the ball a z-index to ensure it appears
-	   above the pet and the background. */
 	z-index: 2;
 }
+
+/* --- ADD THESE NEW RULES --- */
+.pet-view-add-button {
+	position: absolute;
+	top: 8px;
+	right: 8px;
+	z-index: 10;
+	width: 24px;
+	height: 24px;
+	background-color: var(--background-modifier-border);
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+	font-size: 16px;
+	color: var(--text-muted);
+}
+
+.pet-view-add-button:hover {
+	background-color: var(--background-modifier-border-hover);
+	color: var(--text-normal);
+}
+/* --- END OF NEW RULES --- */
