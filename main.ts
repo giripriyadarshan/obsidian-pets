@@ -40,6 +40,30 @@ export default class MyPlugin extends Plugin {
 			}
 		});
 
+		this.addCommand({
+			id: 'spawn-additional-pet',
+			name: 'Spawn an additional pet',
+			callback: () => {
+				const leaf = this.app.workspace.getLeavesOfType(PET_VIEW_TYPE)[0];
+				if (leaf) {
+					const petView = leaf.view as PetView;
+					petView.spawnPet(this.settings.petType, this.settings.petColor);
+				}
+			}
+		});
+
+		this.addCommand({
+			id: 'remove-all-pets',
+			name: 'Remove all pets',
+			callback: () => {
+				const leaf = this.app.workspace.getLeavesOfType(PET_VIEW_TYPE)[0];
+				if (leaf) {
+					const petView = leaf.view as PetView;
+					petView.clearAllPets();
+				}
+			}
+		});
+
 		// This adds a settings tab so the user can configure various aspects of the plugin
 		this.addSettingTab(new PetSettingTab(this.app, this));
 	}
@@ -114,8 +138,11 @@ class PetSettingTab extends PluginSettingTab {
 				.setValue(this.plugin.settings.petType)
 				.onChange(async (value) => {
 					this.plugin.settings.petType = value;
-					await this.plugin.saveSettings();
-					this.plugin.respawnPet(); // Respawn the pet with the new type
+					const leaf = this.app.workspace.getLeavesOfType(PET_VIEW_TYPE)[0];
+					if (leaf) {
+						const petView = leaf.view as PetView;
+						petView.resetAndSpawnPet(this.plugin.settings.petType, this.plugin.settings.petColor);
+					}
 				}));
 
 		new Setting(containerEl)
@@ -133,7 +160,12 @@ class PetSettingTab extends PluginSettingTab {
 				.onChange(async (value) => {
 					this.plugin.settings.petColor = value;
 					await this.plugin.saveSettings();
-					this.plugin.respawnPet(); // Respawn the pet with the new color
+					const leaf = this.app.workspace.getLeavesOfType(PET_VIEW_TYPE)[0];
+					if (leaf) {
+						const petView = leaf.view as PetView;
+						petView.resetAndSpawnPet(this.plugin.settings.petType, this.plugin.settings.petColor);
+					}
 				}));
+
 	}
 }

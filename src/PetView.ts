@@ -6,42 +6,52 @@ import { Pet } from "./pet";
 export const PET_VIEW_TYPE = "pet-view";
 
 export class PetView extends ItemView {
-	private pet: Pet;
+	// We now have an array of pets
+	private pets: Pet[] = [];
 	private animationFrameId: number;
 
 	constructor(leaf: WorkspaceLeaf) {
 		super(leaf);
 	}
 
-	getViewType() {
-		return PET_VIEW_TYPE;
-	}
-
-	getDisplayText() {
-		return "Pet View";
-	}
-
-	getIcon() {
-		return "dog";
-	}
+	getViewType() { return PET_VIEW_TYPE; }
+	getDisplayText() { return "Pet View"; }
+	getIcon() { return "dog"; }
 
 	private gameLoop = () => {
-		if (this.pet) {
-			this.pet.update(this.contentEl.offsetWidth);
-		}
+		// Update every pet in the array
+		this.pets.forEach(pet => {
+			pet.update(this.contentEl.offsetWidth);
+		});
 		this.animationFrameId = window.requestAnimationFrame(this.gameLoop);
 	};
 
-	// NEW: A dedicated function to spawn pets
+	// This now adds a new pet to our array
 	spawnPet(type: string, color: string) {
-		// Clean up old pet if it exists
-		if (this.pet && this.pet.el) {
-			this.pet.el.remove();
-		}
+		const newPet = new Pet(this.app, type, color);
+		this.pets.push(newPet);
+		newPet.spawn(this.contentEl);
+	}
 
-		// Create and spawn a new pet with the given settings
-		this.pet = new Pet(this.app, type, color);
-		this.pet.spawn(this.contentEl);
+	// New method to clear all pets and spawn a new default one
+	resetAndSpawnPet(type: string, color: string) {
+		this.clearAllPets();
+		this.spawnPet(type, color);
+	}
+
+	// New method to clear all pets from the view
+	clearAllPets() {
+		// Stop the animation and remove all pet elements
+		if (this.animationFrameId) {
+			window.cancelAnimationFrame(this.animationFrameId);
+		}
+		this.pets.forEach(pet => {
+			if (pet.el) pet.el.remove();
+		});
+		this.pets = []; // Clear the array
+
+		// Restart the loop
+		this.animationFrameId = window.requestAnimationFrame(this.gameLoop);
 	}
 
 	async onOpen() {
@@ -49,7 +59,6 @@ export class PetView extends ItemView {
 		this.contentEl.style.position = 'relative';
 		this.contentEl.style.height = '100%';
 
-		// Get the settings from the main plugin class
 		const plugin = (this.app as any).plugins.plugins['obsidian-pets'];
 		if (plugin) {
 			this.spawnPet(plugin.settings.petType, plugin.settings.petColor);
@@ -59,11 +68,6 @@ export class PetView extends ItemView {
 	}
 
 	async onClose() {
-		if (this.animationFrameId) {
-			window.cancelAnimationFrame(this.animationFrameId);
-		}
-		if (this.pet && this.pet.el) {
-			this.pet.el.remove();
-		}
+		this.clearAllPets(); // Use our new cleanup method
 	}
 }
