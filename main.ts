@@ -3,16 +3,19 @@ import { PetView, PET_VIEW_TYPE } from './src/PetView';
 
 // Remember to rename these classes and interfaces!
 
-interface MyPluginSettings {
-	mySetting: string;
+interface PetPluginSettings {
+	petType: string;
+	petColor: string;
 }
 
-const DEFAULT_SETTINGS: MyPluginSettings = {
-	mySetting: 'default'
+const DEFAULT_SETTINGS: PetPluginSettings = {
+	petType: 'dog',
+	petColor: 'brown',
 }
+
 
 export default class MyPlugin extends Plugin {
-	settings: MyPluginSettings;
+	settings: PetPluginSettings;
 
 	async onload() {
 		await this.loadSettings();
@@ -38,7 +41,7 @@ export default class MyPlugin extends Plugin {
 		});
 
 		// This adds a settings tab so the user can configure various aspects of the plugin
-		this.addSettingTab(new SampleSettingTab(this.app, this));
+		this.addSettingTab(new PetSettingTab(this.app, this));
 	}
 
 	// This function is responsible for opening the view
@@ -59,6 +62,14 @@ export default class MyPlugin extends Plugin {
 		}
 	}
 
+	async respawnPet() {
+		const leaf = this.app.workspace.getLeavesOfType(PET_VIEW_TYPE)[0];
+		if (leaf) {
+			const petView = leaf.view as PetView;
+			petView.spawnPet(this.settings.petType, this.settings.petColor);
+		}
+	}
+
 	onunload() {
 		// When the plugin is disabled, we clean up by detaching our view
 		this.app.workspace.detachLeavesOfType(PET_VIEW_TYPE);
@@ -74,7 +85,9 @@ export default class MyPlugin extends Plugin {
 }
 
 
-class SampleSettingTab extends PluginSettingTab {
+// in main.ts, at the bottom
+
+class PetSettingTab extends PluginSettingTab {
 	plugin: MyPlugin;
 
 	constructor(app: App, plugin: MyPlugin) {
@@ -83,19 +96,44 @@ class SampleSettingTab extends PluginSettingTab {
 	}
 
 	display(): void {
-		const {containerEl} = this;
+		const { containerEl } = this;
 
 		containerEl.empty();
+		containerEl.createEl('h2', { text: 'Obsidian Pets Settings' });
 
 		new Setting(containerEl)
-			.setName('Setting #1')
-			.setDesc('It\'s a secret')
-			.addText(text => text
-				.setPlaceholder('Enter your secret')
-				.setValue(this.plugin.settings.mySetting)
+			.setName('Pet Type')
+			.setDesc('Choose your pet!')
+			.addDropdown(dropdown => dropdown
+				.addOption('dog', 'Dog')
+				.addOption('cat', 'Cat (WIP)')
+				.addOption('crab', 'Crab')
+				.addOption('clippy', 'Clippy')
+				.addOption('chicken', 'Chicken')
+				.addOption('fox', 'Fox')
+				.setValue(this.plugin.settings.petType)
 				.onChange(async (value) => {
-					this.plugin.settings.mySetting = value;
+					this.plugin.settings.petType = value;
 					await this.plugin.saveSettings();
+					this.plugin.respawnPet(); // Respawn the pet with the new type
+				}));
+
+		new Setting(containerEl)
+			.setName('Pet Color')
+			.setDesc('Choose the color of your pet.')
+			.addDropdown(dropdown => dropdown
+				.addOption('brown', 'Brown')
+				.addOption('black', 'Black')
+				.addOption('red', 'Red')
+				.addOption('green', 'Green')
+				.addOption('yellow', 'Yellow')
+				.addOption('gray', 'Gray')
+				.addOption('white', 'White')
+				.setValue(this.plugin.settings.petColor)
+				.onChange(async (value) => {
+					this.plugin.settings.petColor = value;
+					await this.plugin.saveSettings();
+					this.plugin.respawnPet(); // Respawn the pet with the new color
 				}));
 	}
 }

@@ -7,7 +7,7 @@ export const PET_VIEW_TYPE = "pet-view";
 
 export class PetView extends ItemView {
 	private pet: Pet;
-	private animationFrameId: number; // To store the ID of the animation frame
+	private animationFrameId: number;
 
 	constructor(leaf: WorkspaceLeaf) {
 		super(leaf);
@@ -25,35 +25,43 @@ export class PetView extends ItemView {
 		return "dog";
 	}
 
-	// NEW: The game loop
 	private gameLoop = () => {
 		if (this.pet) {
-			// Pass the width of the view to the pet for boundary detection
 			this.pet.update(this.contentEl.offsetWidth);
 		}
-		// Continue the loop
 		this.animationFrameId = window.requestAnimationFrame(this.gameLoop);
 	};
 
+	// NEW: A dedicated function to spawn pets
+	spawnPet(type: string, color: string) {
+		// Clean up old pet if it exists
+		if (this.pet && this.pet.el) {
+			this.pet.el.remove();
+		}
+
+		// Create and spawn a new pet with the given settings
+		this.pet = new Pet(this.app, type, color);
+		this.pet.spawn(this.contentEl);
+	}
+
 	async onOpen() {
 		this.contentEl.empty();
-
 		this.contentEl.style.position = 'relative';
 		this.contentEl.style.height = '100%';
 
-		this.pet = new Pet(this.app, 'dog', 'brown');
-		this.pet.spawn(this.contentEl);
+		// Get the settings from the main plugin class
+		const plugin = (this.app as any).plugins.plugins['obsidian-pets'];
+		if (plugin) {
+			this.spawnPet(plugin.settings.petType, plugin.settings.petColor);
+		}
 
-		// Start the game loop
 		this.animationFrameId = window.requestAnimationFrame(this.gameLoop);
 	}
 
 	async onClose() {
-		// IMPORTANT: Stop the animation loop when the view is closed to save resources
 		if (this.animationFrameId) {
 			window.cancelAnimationFrame(this.animationFrameId);
 		}
-
 		if (this.pet && this.pet.el) {
 			this.pet.el.remove();
 		}
