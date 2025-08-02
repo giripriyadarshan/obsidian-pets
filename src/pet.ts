@@ -24,23 +24,12 @@ export class Pet {
 		this.petSize = petSize;
 		this.position = { x: 50, y: 0 };
 
-		// --- NEW LOGIC: Set speed based on pet size ---
 		switch (this.petSize) {
-			case PetSize.nano:
-				this.speed = 1.0;
-				break;
-			case PetSize.small:
-				this.speed = 1.5;
-				break;
-			case PetSize.large:
-				this.speed = 2.5;
-				break;
-			case PetSize.medium:
-			default:
-				this.speed = 2.0;
-				break;
+			case PetSize.nano: this.speed = 1.0; break;
+			case PetSize.small: this.speed = 1.5; break;
+			case PetSize.large: this.speed = 2.5; break;
+			case PetSize.medium: default: this.speed = 2.0; break;
 		}
-		// --- END OF NEW LOGIC ---
 
 		this.el = document.createElement('img');
 		this.el.addClass('obsidian-pet');
@@ -72,9 +61,7 @@ export class Pet {
 		const currentSrcBase = this.el.src.split('?')[0];
 		const newSrcBase = assetPath.split('?')[0];
 
-		if (currentSrcBase !== newSrcBase) {
-			this.el.src = assetPath;
-		}
+		if (currentSrcBase !== newSrcBase) this.el.src = assetPath;
 
 		this.el.style.transform = this.direction === -1 ? 'scaleX(-1)' : 'scaleX(1)';
 	}
@@ -86,15 +73,15 @@ export class Pet {
 				this.currentState = PetState.chase;
 			}
 		} else if (this.currentState === PetState.chase && ball) {
-			const speed = this.speed * 1.5; // Chase speed is faster than normal walking
+			const chaseSpeed = this.speed * 1.5;
 			const targetX = ball.position.x;
 			const xDistance = Math.abs(this.position.x - targetX);
 
 			if (xDistance > 10) {
 				if (this.position.x < targetX) {
-					this.direction = 1; this.position.x += speed;
+					this.direction = 1; this.position.x += chaseSpeed;
 				} else {
-					this.direction = -1; this.position.x -= speed;
+					this.direction = -1; this.position.x -= chaseSpeed;
 				}
 			}
 
@@ -116,8 +103,12 @@ export class Pet {
 			}
 
 			if (this.currentState === PetState.walk) {
-				this.position.x += this.speed;
-				if (this.position.x > viewWidth - 50 || this.position.x < 0) this.direction *= -1;
+				this.position.x += this.speed * this.direction;
+
+				const petWidth = this.el.offsetWidth;
+				if (this.position.x > viewWidth - petWidth || this.position.x < 0) {
+					this.direction *= -1;
+				}
 			}
 		}
 
