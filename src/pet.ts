@@ -1,32 +1,47 @@
-// src/pet.ts
-
 import { App } from "obsidian";
 import { PetState } from "./states";
 import { Ball } from "./ball";
 import { PetSize } from "./types";
 
 export class Pet {
-	el: HTMLImageElement; // The element is now specifically an Image
+	el: HTMLImageElement;
 	app: App;
 	petType: string;
 	petColor: string;
-	petSize: string;
+	petSize: PetSize;
 
 	currentState: PetState = PetState.idle;
-	private speed = 2;
-	private direction = 1;
+	private speed: number;
+	private direction= 1;
 	position: { x: number, y: number };
 
 	private stateChangeTimer = 0;
 
-	constructor(app: App, petType = 'dog', petColor = 'brown', petSize: PetSize) {
+	constructor(app: App, petType: string, petColor: string, petSize: PetSize) {
 		this.app = app;
 		this.petType = petType;
 		this.petColor = petColor;
 		this.petSize = petSize;
 		this.position = { x: 50, y: 0 };
 
-		// Create an <img> element instead of a <div>
+		// --- NEW LOGIC: Set speed based on pet size ---
+		switch (this.petSize) {
+			case PetSize.nano:
+				this.speed = 1.0;
+				break;
+			case PetSize.small:
+				this.speed = 1.5;
+				break;
+			case PetSize.large:
+				this.speed = 2.5;
+				break;
+			case PetSize.medium:
+			default:
+				this.speed = 2.0;
+				break;
+		}
+		// --- END OF NEW LOGIC ---
+
 		this.el = document.createElement('img');
 		this.el.addClass('obsidian-pet');
 	}
@@ -54,53 +69,37 @@ export class Pet {
 
 		const assetPath = this.getAssetPath(`${this.petType}/${this.petColor}_${stateSprite}_8fps.gif`);
 
-		// --- THE ANIMATION FIX ---
-		// Get the base URLs by removing the cache-busting query string
 		const currentSrcBase = this.el.src.split('?')[0];
 		const newSrcBase = assetPath.split('?')[0];
 
-		// Only update the image source if the base GIF file has actually changed.
-		// This prevents the animation from being reset on every frame.
 		if (currentSrcBase !== newSrcBase) {
 			this.el.src = assetPath;
 		}
-		// --- END OF FIX ---
 
 		this.el.style.transform = this.direction === -1 ? 'scaleX(-1)' : 'scaleX(1)';
 	}
 
-	// in src/pet.ts
-
 	update(viewWidth: number, viewHeight: number, ball: Ball | null): string | void {
-		// 1. AI: Decide if it's time to chase the ball
 		if (this.currentState !== PetState.chase && ball) {
 			const ballIsOnFloor = ball.position.y >= viewHeight - 25;
 			if (ballIsOnFloor && Math.random() < 0.8) {
 				this.currentState = PetState.chase;
 			}
 		} else if (this.currentState === PetState.chase && ball) {
-			// Logic for actively chasing the ball
-			const speed = 4;
+			const speed = this.speed * 1.5; // Chase speed is faster than normal walking
 			const targetX = ball.position.x;
 			const xDistance = Math.abs(this.position.x - targetX);
 
-			// --- THE AI FIX: "Dead Zone" ---
-			// If the pet is already close to being under the ball, stop moving and wait.
 			if (xDistance > 10) {
-				// Only move if not in the "dead zone"
 				if (this.position.x < targetX) {
 					this.direction = 1; this.position.x += speed;
 				} else {
 					this.direction = -1; this.position.x -= speed;
 				}
 			}
-			// --- END OF FIX ---
 
-			// Improved collision detection
 			const ballIsOnFloor = ball.position.y >= viewHeight - 25;
 			const canCatchOnFloor = ballIsOnFloor && xDistance < 25;
-
-			// Allow catching the ball if it lands near the pet's head
 			const canCatchInAir = xDistance < 35 && Math.abs(ball.position.y - (viewHeight - 40)) < 20;
 
 			if (canCatchOnFloor || canCatchInAir) {
@@ -109,7 +108,6 @@ export class Pet {
 				return 'caught_ball';
 			}
 		} else {
-			// Normal Idle/Walk Behavior
 			this.stateChangeTimer++;
 			if (this.stateChangeTimer > 180) {
 				if (this.el.hasClass('with-ball')) this.el.removeClass('with-ball');
@@ -118,7 +116,7 @@ export class Pet {
 			}
 
 			if (this.currentState === PetState.walk) {
-				this.position.x += this.speed * this.direction;
+				this.position.x += this.speed;
 				if (this.position.x > viewWidth - 50 || this.position.x < 0) this.direction *= -1;
 			}
 		}
@@ -134,7 +132,6 @@ export class Pet {
 			[PetSize.medium]: 50,
 			[PetSize.large]: 65,
 		}[this.petSize];
-
 
 		this.el.style.position = 'absolute';
 		this.el.style.bottom = '0px';
