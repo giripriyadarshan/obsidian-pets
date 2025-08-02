@@ -2,6 +2,7 @@
 
 import { ItemView, WorkspaceLeaf } from "obsidian";
 import { Pet } from "./pet";
+import { PetSize } from "./types";
 
 export const PET_VIEW_TYPE = "pet-view";
 
@@ -54,6 +55,52 @@ export class PetView extends ItemView {
 		this.animationFrameId = window.requestAnimationFrame(this.gameLoop);
 	}
 
+	applyTheme(theme: string) {
+		if (theme === 'none') {
+			this.contentEl.style.backgroundImage = 'none';
+			return;
+		}
+
+		const assetPath = (asset: string) => {
+			const pluginId = 'obsidian-pets';
+			const plugin = this.app.plugins.getPlugin(pluginId);
+			if (!plugin) return '';
+			return this.app.vault.adapter.getResourcePath(
+				`${plugin.app.vault.configDir}/plugins/${pluginId}/media/${asset}`
+			);
+		};
+
+		// 1. Determine the panel size
+		const width = this.contentEl.offsetWidth;
+		let petSize: PetSize;
+		if (width < 300) {
+			petSize = PetSize.nano;
+		} else if (width < 500) {
+			petSize = PetSize.small;
+		} else if (width < 800) {
+			petSize = PetSize.medium;
+		} else {
+			petSize = PetSize.large;
+		}
+
+		// 2. Determine the color theme
+		const isDarkMode = document.body.classList.contains('theme-dark');
+		const themeKind = isDarkMode ? 'dark' : 'light';
+
+		// 3. Construct the filename based on the original project's logic
+		// This handles all cases, including "beach", "castle", etc.
+		const backgroundUrl = assetPath(`backgrounds/${theme}/background-${themeKind}-${petSize}.png`);
+
+		// 4. Set the background image
+		// We removed the fetch() wrapper to prevent the unhandled promise rejection error.
+		// If a file is not found, the background will simply be empty, which is graceful.
+		this.contentEl.style.backgroundImage = `url('${backgroundUrl}')`;
+		this.contentEl.style.backgroundSize = 'cover';
+		this.contentEl.style.backgroundRepeat = 'no-repeat';
+		this.contentEl.style.backgroundPosition = 'center';
+	}
+
+
 	async onOpen() {
 		this.contentEl.empty();
 		this.contentEl.style.position = 'relative';
@@ -61,6 +108,7 @@ export class PetView extends ItemView {
 
 		const plugin = (this.app as any).plugins.plugins['obsidian-pets'];
 		if (plugin) {
+			this.applyTheme(plugin.settings.theme);
 			this.spawnPet(plugin.settings.petType, plugin.settings.petColor);
 		}
 

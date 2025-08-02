@@ -6,11 +6,13 @@ import { PetView, PET_VIEW_TYPE } from './src/PetView';
 interface PetPluginSettings {
 	petType: string;
 	petColor: string;
+	theme: string;
 }
 
 const DEFAULT_SETTINGS: PetPluginSettings = {
 	petType: 'dog',
 	petColor: 'brown',
+	theme: 'none',
 }
 
 
@@ -164,6 +166,28 @@ class PetSettingTab extends PluginSettingTab {
 					if (leaf) {
 						const petView = leaf.view as PetView;
 						petView.resetAndSpawnPet(this.plugin.settings.petType, this.plugin.settings.petColor);
+					}
+				}));
+
+		new Setting(containerEl)
+			.setName('Theme')
+			.setDesc('Choose a background theme for your pets.')
+			.addDropdown(dropdown => dropdown
+				.addOption('none', 'None')
+				.addOption('castle', 'Castle')
+				.addOption('forest', 'Forest')
+				.addOption('beach', 'Beach')
+				.addOption('winter', 'Winter')
+				.setValue(this.plugin.settings.theme)
+				.onChange(async (value) => {
+					this.plugin.settings.theme = value;
+					await this.plugin.saveSettings();
+
+					// Tell the view to update its theme
+					const leaf = this.app.workspace.getLeavesOfType(PET_VIEW_TYPE)[0];
+					if (leaf) {
+						const petView = leaf.view as PetView;
+						petView.applyTheme(this.plugin.settings.theme);
 					}
 				}));
 
