@@ -41,16 +41,16 @@ export class PetView extends ItemView {
 	};
 
 	// This now adds a new pet to our array
-	spawnPet(type: string, color: string) {
-		const newPet = new Pet(this.app, type, color);
+	spawnPet(type: string, color: string, size: PetSize) {
+		const newPet = new Pet(this.app, type, color, size);
 		this.pets.push(newPet);
 		newPet.spawn(this.contentEl);
 	}
 
 	// New method to clear all pets and spawn a new default one
-	resetAndSpawnPet(type: string, color: string) {
+	resetAndSpawnPet(type: string, color: string, size: PetSize) {
 		this.clearAllPets();
-		this.spawnPet(type, color);
+		this.spawnPet(type, color, size);
 	}
 
 	// New method to clear all pets from the view
@@ -117,8 +117,10 @@ export class PetView extends ItemView {
 		if (this.ball) {
 			this.ball.remove();
 		}
-		// Start the ball in the middle of the view
-		this.ball = new Ball(this.app, this.contentEl.offsetWidth / 2, this.contentEl.offsetHeight / 2);
+		const plugin = (this.app as any).plugins.plugins['obsidian-pets'];
+		const petSize = plugin.settings.petSize as PetSize;
+
+		this.ball = new Ball(this.app, this.contentEl.offsetWidth / 2, this.contentEl.offsetHeight / 2, petSize);
 		this.ball.spawn(this.contentEl);
 	}
 
@@ -131,7 +133,7 @@ export class PetView extends ItemView {
 		const plugin = (this.app as any).plugins.plugins['obsidian-pets'];
 		if (plugin) {
 			this.applyTheme(plugin.settings.theme);
-			this.spawnPet(plugin.settings.petType, plugin.settings.petColor);
+			this.spawnPet(plugin.settings.petType, plugin.settings.petColor, plugin.settings.petSize as PetSize);
 		}
 
 		this.animationFrameId = window.requestAnimationFrame(this.gameLoop);

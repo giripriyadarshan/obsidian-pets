@@ -6,12 +6,14 @@ import { PetView, PET_VIEW_TYPE } from './src/PetView';
 interface PetPluginSettings {
 	petType: string;
 	petColor: string;
+	petSize: string;
 	theme: string;
 }
 
 const DEFAULT_SETTINGS: PetPluginSettings = {
 	petType: 'dog',
 	petColor: 'brown',
+	petSize: 'medium',
 	theme: 'none',
 }
 
@@ -178,6 +180,27 @@ class PetSettingTab extends PluginSettingTab {
 					if (leaf) {
 						const petView = leaf.view as PetView;
 						petView.resetAndSpawnPet(this.plugin.settings.petType, this.plugin.settings.petColor);
+					}
+				}));
+
+		new Setting(containerEl)
+			.setName('Pet Size')
+			.setDesc('Choose the size of your pets.')
+			.addDropdown(dropdown => dropdown
+				.addOption('nano', 'Nano')
+				.addOption('small', 'Small')
+				.addOption('medium', 'Medium')
+				.addOption('large', 'Large')
+				.setValue(this.plugin.settings.petSize)
+				.onChange(async (value) => {
+					this.plugin.settings.petSize = value;
+					await this.plugin.saveSettings();
+
+					// Respawn the pet with the new size
+					const leaf = this.app.workspace.getLeavesOfType(PET_VIEW_TYPE)[0];
+					if (leaf) {
+						const petView = leaf.view as PetView;
+						petView.resetAndSpawnPet(this.plugin.settings.petType, this.plugin.settings.petColor, this.plugin.settings.petSize);
 					}
 				}));
 

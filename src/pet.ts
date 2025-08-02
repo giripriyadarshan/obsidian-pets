@@ -3,12 +3,14 @@
 import { App } from "obsidian";
 import { PetState } from "./states";
 import { Ball } from "./ball";
+import { PetSize } from "./types";
 
 export class Pet {
 	el: HTMLImageElement; // The element is now specifically an Image
 	app: App;
 	petType: string;
 	petColor: string;
+	petSize: string;
 
 	currentState: PetState = PetState.idle;
 	private speed = 2;
@@ -17,10 +19,11 @@ export class Pet {
 
 	private stateChangeTimer = 0;
 
-	constructor(app: App, petType = 'dog', petColor = 'brown') {
+	constructor(app: App, petType = 'dog', petColor = 'brown', petSize: PetSize) {
 		this.app = app;
 		this.petType = petType;
 		this.petColor = petColor;
+		this.petSize = petSize;
 		this.position = { x: 50, y: 0 };
 
 		// Create an <img> element instead of a <div>
@@ -125,10 +128,18 @@ export class Pet {
 	}
 
 	spawn(container: HTMLElement) {
+		const size = {
+			[PetSize.nano]: 30,
+			[PetSize.small]: 40,
+			[PetSize.medium]: 50,
+			[PetSize.large]: 65,
+		}[this.petSize];
+
+
 		this.el.style.position = 'absolute';
 		this.el.style.bottom = '0px';
-		this.el.style.width = '50px';
-		this.el.style.height = '50px';
+		this.el.style.width = `${size}px`;
+		this.el.style.height = `${size}px`;
 
 		this.position.x = container.offsetWidth / 2;
 		this.updateSprite();

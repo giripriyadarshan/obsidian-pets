@@ -1,4 +1,5 @@
 import { App } from "obsidian";
+import {PetSize} from "./types";
 
 export class Ball {
 	el: HTMLElement;
@@ -6,16 +7,23 @@ export class Ball {
 	position: { x: number; y: number };
 	private velocity: { x: number; y: number };
 
-	constructor(app: App, startX: number, startY: number) {
+	constructor(app: App, startX: number, startY: number, petSize: PetSize) {
 		this.app = app;
 		this.position = { x: startX, y: startY };
 		this.velocity = { x: (Math.random() * 10) - 5, y: -10 }; // Start with an upward and random horizontal velocity
 
+		const size = {
+			[PetSize.nano]: 5,
+			[PetSize.small]: 10,
+			[PetSize.medium]: 15,
+			[PetSize.large]: 20,
+		}[petSize];
+
 		this.el = document.createElement('div');
 		this.el.addClass('pet-ball');
 		this.el.style.position = 'absolute';
-		this.el.style.width = '20px';
-		this.el.style.height = '20px';
+		this.el.style.width = `${size}px`;
+		this.el.style.height = `${size}px`;
 		this.el.style.borderRadius = '50%';
 		this.el.style.backgroundColor = 'red';
 	}
@@ -32,6 +40,7 @@ export class Ball {
 
 	// A simple physics update
 	update(viewHeight: number, viewWidth: number) {
+		const size = parseInt(this.el.style.width);
 		// Gravity
 		this.velocity.y += 0.5;
 
@@ -39,13 +48,13 @@ export class Ball {
 		this.position.y += this.velocity.y;
 
 		// Bounce off the floor
-		if (this.position.y > viewHeight - 20) {
-			this.position.y = viewHeight - 20;
+		if (this.position.y > viewHeight - size) {
+			this.position.y = viewHeight - size;
 			this.velocity.y *= -0.7; // Lose some energy on bounce
 		}
 
 		// Bounce off walls
-		if (this.position.x < 0 || this.position.x > viewWidth - 20) {
+		if (this.position.x < 0 || this.position.x > viewWidth - size) {
 			this.velocity.x *= -1;
 		}
 
