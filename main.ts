@@ -1,5 +1,6 @@
 import { App, Plugin, PluginSettingTab, Setting } from 'obsidian';
 import { PetView, PET_VIEW_TYPE } from './src/PetView';
+import { PetSuggestModal } from './src/PetSuggestModal';
 
 // Remember to rename these classes and interfaces!
 
@@ -51,7 +52,12 @@ export default class MyPlugin extends Plugin {
 				const leaf = this.app.workspace.getLeavesOfType(PET_VIEW_TYPE)[0];
 				if (leaf) {
 					const petView = leaf.view as PetView;
-					petView.spawnPet(this.settings.petType, this.settings.petColor);
+					// Open the selection modal, just like the '+' button does.
+					new PetSuggestModal(this.app, petView).open();
+				} else {
+					// If the pet view is not open, we could optionally open it first.
+					// For now, it does nothing if the view is not open.
+					this.activateView(); // Let's open the view if it's not already.
 				}
 			}
 		});
@@ -157,7 +163,7 @@ class PetSettingTab extends PluginSettingTab {
 					const leaf = this.app.workspace.getLeavesOfType(PET_VIEW_TYPE)[0];
 					if (leaf) {
 						const petView = leaf.view as PetView;
-						petView.resetAndSpawnPet(this.plugin.settings.petType, this.plugin.settings.petColor);
+						petView.resetAndSpawnPet(this.plugin.settings.petType, this.plugin.settings.petColor, this.plugin.settings.petSize);
 					}
 				}));
 
@@ -179,7 +185,7 @@ class PetSettingTab extends PluginSettingTab {
 					const leaf = this.app.workspace.getLeavesOfType(PET_VIEW_TYPE)[0];
 					if (leaf) {
 						const petView = leaf.view as PetView;
-						petView.resetAndSpawnPet(this.plugin.settings.petType, this.plugin.settings.petColor);
+						petView.resetAndSpawnPet(this.plugin.settings.petType, this.plugin.settings.petColor, this.plugin.settings.petSize);
 					}
 				}));
 

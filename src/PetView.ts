@@ -4,6 +4,7 @@ import { ItemView, WorkspaceLeaf } from "obsidian";
 import { Pet } from "./pet";
 import { PetSize } from "./types";
 import { Ball } from "./ball";
+import {PetSuggestModal} from "./PetSuggestModal";
 
 export const PET_VIEW_TYPE = "pet-view";
 
@@ -126,6 +127,10 @@ export class PetView extends ItemView {
 
 
 	async onOpen() {
+		this.addAction('plus', 'Add a new pet', () => {
+			new PetSuggestModal(this.app, this).open();
+		});
+
 		this.contentEl.empty();
 		this.contentEl.style.position = 'relative';
 		this.contentEl.style.height = '100%';
