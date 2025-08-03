@@ -152,7 +152,6 @@ class PetSettingTab extends PluginSettingTab {
 			.setDesc('Choose your pet!')
 			.addDropdown(dropdown => dropdown
 				.addOption('dog', 'Dog')
-				.addOption('cat', 'Cat (WIP)')
 				.addOption('crab', 'Crab')
 				.addOption('clippy', 'Clippy')
 				.addOption('chicken', 'Chicken')

@@ -1,15 +1,13 @@
 import { App, SuggestModal } from 'obsidian';
 import { PetView } from './PetView';
-import { PetSize } from './types';
 import { ColorSuggestModal } from './ColorSuggestModal';
 
 const PET_TYPES = [
-	'dog', 'cat', 'crab', 'clippy', 'chicken', 'fox', 'rocky', 'rubber-duck', 'totoro', 'snake', 'horse'
+	'dog', 'crab', 'clippy', 'chicken', 'fox', 'rocky', 'rubber-duck', 'totoro', 'snake', 'horse'
 ];
 
 export const PET_COLOR_MAP: Record<string, string[]> = {
 	'dog': ['brown', 'black', 'red', 'white', 'akita'],
-	'cat': ['brown', 'black', 'orange', 'white'],
 	'crab': ['red'],
 	'clippy': ['black', 'brown', 'green', 'yellow'],
 	'chicken': ['white'],
