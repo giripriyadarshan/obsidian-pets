@@ -1,6 +1,7 @@
 import { App, Plugin, PluginSettingTab, Setting } from 'obsidian';
 import { PetView, PET_VIEW_TYPE } from './src/PetView';
 import { PetSuggestModal } from './src/PetSuggestModal';
+import {PetSize} from "./src/types";
 
 // Remember to rename these classes and interfaces!
 
@@ -112,7 +113,7 @@ export default class MyPlugin extends Plugin {
 		const leaf = this.app.workspace.getLeavesOfType(PET_VIEW_TYPE)[0];
 		if (leaf) {
 			const petView = leaf.view as PetView;
-			petView.spawnPet(this.settings.petType, this.settings.petColor);
+			petView.spawnPet(this.settings.petType, this.settings.petColor, this.settings.petSize as PetSize, `${this.settings.petColor} ${this.settings.petType}`);
 		}
 	}
 
@@ -162,7 +163,7 @@ class PetSettingTab extends PluginSettingTab {
 					const leaf = this.app.workspace.getLeavesOfType(PET_VIEW_TYPE)[0];
 					if (leaf) {
 						const petView = leaf.view as PetView;
-						petView.resetAndSpawnPet(this.plugin.settings.petType, this.plugin.settings.petColor, this.plugin.settings.petSize);
+						petView.resetAndSpawnPet(this.plugin.settings.petType, this.plugin.settings.petColor, this.plugin.settings.petSize as PetSize);
 					}
 				}));
 
@@ -184,7 +185,7 @@ class PetSettingTab extends PluginSettingTab {
 					const leaf = this.app.workspace.getLeavesOfType(PET_VIEW_TYPE)[0];
 					if (leaf) {
 						const petView = leaf.view as PetView;
-						petView.resetAndSpawnPet(this.plugin.settings.petType, this.plugin.settings.petColor, this.plugin.settings.petSize);
+						petView.resetAndSpawnPet(this.plugin.settings.petType, this.plugin.settings.petColor, this.plugin.settings.petSize as PetSize);
 					}
 				}));
 
@@ -205,7 +206,7 @@ class PetSettingTab extends PluginSettingTab {
 					const leaf = this.app.workspace.getLeavesOfType(PET_VIEW_TYPE)[0];
 					if (leaf) {
 						const petView = leaf.view as PetView;
-						petView.resetAndSpawnPet(this.plugin.settings.petType, this.plugin.settings.petColor, this.plugin.settings.petSize);
+						petView.resetAndSpawnPet(this.plugin.settings.petType, this.plugin.settings.petColor, this.plugin.settings.petSize as PetSize);
 					}
 				}));
 

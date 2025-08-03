@@ -10,13 +10,13 @@ export class Ball {
 	constructor(app: App, startX: number, startY: number, petSize: PetSize) {
 		this.app = app;
 		this.position = { x: startX, y: startY };
-		this.velocity = { x: (Math.random() * 10) - 5, y: -10 }; // Start with an upward and random horizontal velocity
+		this.velocity = { x: (Math.random() * 10) - 5, y: -10 };
 
 		const size = {
-			[PetSize.nano]: 5,
-			[PetSize.small]: 10,
-			[PetSize.medium]: 15,
-			[PetSize.large]: 20,
+			[PetSize.nano]: 15,
+			[PetSize.small]: 20,
+			[PetSize.medium]: 25,
+			[PetSize.large]: 30,
 		}[petSize];
 
 		this.el = document.createElement('div');
@@ -38,18 +38,20 @@ export class Ball {
 		this.el.style.top = `${this.position.y}px`;
 	}
 
-	// A simple physics update
-	update(viewHeight: number, viewWidth: number) {
-		const size = parseInt(this.el.style.width);
+	// The method signature is updated to accept the floor's Y-coordinate
+	update(viewHeight: number, viewWidth: number, floorY: number) {
 		// Gravity
 		this.velocity.y += 0.5;
 
 		this.position.x += this.velocity.x;
 		this.position.y += this.velocity.y;
 
-		// Bounce off the floor
-		if (this.position.y > viewHeight - size) {
-			this.position.y = viewHeight - size;
+		const size = parseInt(this.el.style.width);
+
+		// --- THIS IS THE FIX ---
+		// Bounce off the theme's floor instead of the absolute bottom of the view
+		if (this.position.y > floorY - size) {
+			this.position.y = floorY - size;
 			this.velocity.y *= -0.7; // Lose some energy on bounce
 		}
 
