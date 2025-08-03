@@ -44,7 +44,7 @@ export class Pet {
 
 	private getAssetPath(asset: string): string {
 		const pluginId = 'obsidian-pets';
-		const plugin = this.app.plugins.getPlugin(pluginId);
+		const plugin = (this.app as any).plugins.getPlugin(pluginId);
 		if (!plugin) return '';
 		return this.app.vault.adapter.getResourcePath(
 			`${plugin.app.vault.configDir}/plugins/${pluginId}/media/${asset}`
