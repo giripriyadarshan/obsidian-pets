@@ -1,96 +1,70 @@
-translated to obsidian from [tonybaloney/vscode-pets](https://github.com/tonybaloney/vscode-pets) 
+# Obsidian Pets
 
-# Obsidian Sample Plugin
+This is an Obsidian plugin that brings the joy of `vscode-pets` to your vault. It adds a cute pet to your Obsidian workspace that follows you around.
 
-This is a sample plugin for Obsidian (https://obsidian.md).
+This project is a direct translation of the popular Visual Studio Code extension [vscode-pets](https://github.com/tonybaloney/vscode-pets) by [Anthony Shaw](https://github.com/tonybaloney).
 
-This project uses TypeScript to provide type checking and documentation.
-The repo depends on the latest plugin API (obsidian.d.ts) in TypeScript Definition format, which contains TSDoc comments describing what it does.
+## How to Use
 
-This sample plugin demonstrates some of the basic functionality the plugin API can do.
-- Adds a ribbon icon, which shows a Notice when clicked.
-- Adds a command "Open Sample Modal" which opens a Modal.
-- Adds a plugin setting tab to the settings page.
-- Registers a global click event and output 'click' to the console.
-- Registers a global interval which logs 'setInterval' to the console.
+1.  Install the plugin from the Obsidian community plugins browser.
+2.  Enable the plugin in your Obsidian settings.
+3.  Open the command palette and run the command "Open Pet View".
+4.  A new view will open in the right sidebar with your new pet!
 
-## First time developing plugins?
+You can customize the pet type, color, size, and background theme from the plugin's settings tab.
 
-Quick starting guide for new plugin devs:
+## Current Status
 
-- Check if [someone already developed a plugin for what you want](https://obsidian.md/plugins)! There might be an existing plugin similar enough that you can partner up with.
-- Make a copy of this repo as a template with the "Use this template" button (login to GitHub if you don't see it).
-- Clone your repo to a local development folder. For convenience, you can place this folder in your `.obsidian/plugins/your-plugin-name` folder.
-- Install NodeJS, then run `npm i` in the command line under your repo folder.
-- Run `npm run dev` to compile your plugin from `main.ts` to `main.js`.
-- Make changes to `main.ts` (or create new `.ts` files). Those changes should be automatically compiled into `main.js`.
-- Reload Obsidian to load the new version of your plugin.
-- Enable plugin in settings window.
-- For updates to the Obsidian API run `npm update` in the command line under your repo folder.
+This plugin has a solid foundation, but it doesn't yet have all the features of the original `vscode-pets`.
 
-## Releasing new releases
+### Implemented Features
 
-- Update your `manifest.json` with your new version number, such as `1.0.1`, and the minimum Obsidian version required for your latest release.
-- Update your `versions.json` file with `"new-plugin-version": "minimum-obsidian-version"` so older versions of Obsidian can download an older version of your plugin that's compatible.
-- Create new GitHub release using your new version number as the "Tag version". Use the exact version number, don't include a prefix `v`. See here for an example: https://github.com/obsidianmd/obsidian-sample-plugin/releases
-- Upload the files `manifest.json`, `main.js`, `styles.css` as binary attachments. Note: The manifest.json file must be in two places, first the root path of your repository and also in the release.
-- Publish the release.
+*   **Choice of Pets**: You can choose between a dog, a crab, clippy, a chicken, and a fox.
+*   **Pet Colors**: Select from a variety of colors for your pet.
+*   **Pet Size**: Adjust the size of your pet (nano, small, medium, large).
+*   **Themes**: Choose a background for your pets. Available themes are:
+	*   Castle
+	*   Forest
+	*   Beach
+	*   Winter
+*   **Multiple Pets**: You can spawn additional pets.
+*   **Throw a Ball**: Interact with your pets by throwing a ball.
+*   **Commands**:
+	*   Open Pet View
+	*   Spawn an additional pet
+	*   Remove all pets
+	*   Throw ball
 
-> You can simplify the version bump process by running `npm version patch`, `npm version minor` or `npm version major` after updating `minAppVersion` manually in `manifest.json`.
-> The command will bump version in `manifest.json` and `package.json`, and add the entry for the new version to `versions.json`
+### Remaining Features from `vscode-pets`
 
-## Adding your plugin to the community plugin list
+The following features from the original `vscode-pets` are not yet implemented:
 
-- Check the [plugin guidelines](https://docs.obsidian.md/Plugins/Releasing/Plugin+guidelines).
-- Publish an initial version.
-- Make sure you have a `README.md` file in the root of your repo.
-- Make a pull request at https://github.com/obsidianmd/obsidian-releases to add your plugin.
+*   **More Pets**: `vscode-pets` has a much larger variety of pets, including:
+	*   Cat
+	*   Snake
+	*   Rubber Duck
+	*   Rocky
+	*   Zappy
+	*   Cockatiel
+	*   Ferris the crab
+	*   Mod the dotnet bot
+	*   Turtle
+	*   Horse
+	*   Snail
+	*   Frog
+	*   Panda
+	*   Akita inu
+*   **More Pet Interactions**:
+	*   Pets interacting with the mouse pointer.
+	*   Pets displaying text bubbles on hover.
+	*   Pets becoming friends with each other (showing a "❤️" and playing chase).
+*   **Throw Ball with Mouse**: A setting to throw the ball with the mouse.
+*   **Roll-call**: A command to get a description of current pets.
+*   **Import/Export Pet List**: Commands to share pet setups.
+*   **Disable Special Effects**: An option to disable theme-specific special effects (like snowfall).
+*   **Translations**: The original extension supports multiple languages.
 
-## How to use
+## Credits
 
-- Clone this repo.
-- Make sure your NodeJS is at least v16 (`node --version`).
-- `npm i` or `yarn` to install dependencies.
-- `npm run dev` to start compilation in watch mode.
-
-## Manually installing the plugin
-
-- Copy over `main.js`, `styles.css`, `manifest.json` to your vault `VaultFolder/.obsidian/plugins/your-plugin-id/`.
-
-## Improve code quality with eslint (optional)
-- [ESLint](https://eslint.org/) is a tool that analyzes your code to quickly find problems. You can run ESLint against your plugin to find common bugs and ways to improve your code. 
-- To use eslint with this project, make sure to install eslint from terminal:
-  - `npm install -g eslint`
-- To use eslint to analyze this project use this command:
-  - `eslint main.ts`
-  - eslint will then create a report with suggestions for code improvement by file and line number.
-- If your source code is in a folder, such as `src`, you can use eslint with this command to analyze all files in that folder:
-  - `eslint .\src\`
-
-## Funding URL
-
-You can include funding URLs where people who use your plugin can financially support it.
-
-The simple way is to set the `fundingUrl` field to your link in your `manifest.json` file:
-
-```json
-{
-    "fundingUrl": "https://buymeacoffee.com"
-}
-```
-
-If you have multiple URLs, you can also do:
-
-```json
-{
-    "fundingUrl": {
-        "Buy Me a Coffee": "https://buymeacoffee.com",
-        "GitHub Sponsor": "https://github.com/sponsors",
-        "Patreon": "https://www.patreon.com/"
-    }
-}
-```
-
-## API Documentation
-
-See https://github.com/obsidianmd/obsidian-api
+*   This project is a port of the [vscode-pets](https://github.com/tonybaloney/vscode-pets) extension for Visual Studio Code, created by [Anthony Shaw](https://github.com/tonybaloney).
+*   All the original assets and animations are from the `vscode-pets` project and its contributors. Please see the [credits section of the original project](https://github.com/tonybaloney/vscode-pets#credits) for a full list of artists and designers.
