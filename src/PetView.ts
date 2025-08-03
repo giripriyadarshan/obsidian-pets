@@ -5,6 +5,7 @@ import { Pet } from "./pet";
 import { PetSize } from "./types";
 import { Ball } from "./ball";
 import {PetSuggestModal} from "./PetSuggestModal";
+import { RemovePetModal } from './RemovePetModal';
 
 import { PET_NAMES } from './names';
 export const PET_VIEW_TYPE = "pet-view";
@@ -22,6 +23,18 @@ export class PetView extends ItemView {
 	getViewType() { return PET_VIEW_TYPE; }
 	getDisplayText() { return "Pet View"; }
 	getIcon() { return "dog"; }
+
+	getPets(): Pet[] {
+		return this.pets;
+	}
+
+	removePetById(petId: number) {
+		const petToRemove = this.pets.find(p => p.id === petId);
+		if (petToRemove) {
+			petToRemove.el.remove();
+			this.pets = this.pets.filter(p => p.id !== petId);
+		}
+	}
 
 	private gameLoop = () => {
 		// Update every pet in the array
@@ -136,6 +149,9 @@ export class PetView extends ItemView {
 		this.addAction('plus', 'Add a new pet', () => {
 			new PetSuggestModal(this.app, this).open();
 		});
+		this.addAction('minus', 'Remove a pet', () => {
+			new RemovePetModal(this.app, this).open();
+		});
 
 		this.contentEl.empty();
 		this.contentEl.style.position = 'relative';
@@ -158,6 +174,14 @@ export class PetView extends ItemView {
 		setIcon(addButton, 'plus'); // Use Lucide 'plus' icon
 		addButton.addEventListener('click', () => {
 			new PetSuggestModal(this.app, this).open();
+		});
+
+		// Remove Pet Button
+		const removeButton = buttonContainer.createEl('button', { cls: 'pet-view-action-button' });
+		removeButton.setAttribute('aria-label', 'Remove a pet');
+		setIcon(removeButton, 'minus'); // Use Lucide 'minus' icon
+		removeButton.addEventListener('click', () => {
+			new RemovePetModal(this.app, this).open();
 		});
 
 		const plugin = (this.app as any).plugins.plugins['obsidian-pets'];

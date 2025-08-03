@@ -4,6 +4,7 @@ import { Ball } from "./ball";
 import { PetSize } from "./types";
 
 export class Pet {
+	id: number;
 	el: HTMLImageElement;
 	app: App;
 	petType: string;
@@ -19,6 +20,7 @@ export class Pet {
 	private stateChangeTimer = 0;
 
 	constructor(app: App, petType: string, petColor: string, petSize: PetSize, name: string) {
+		this.id = Date.now() + Math.random();
 		this.app = app;
 		this.petType = petType;
 		this.petColor = petColor;
