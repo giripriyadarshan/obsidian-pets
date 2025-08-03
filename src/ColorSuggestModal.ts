@@ -3,7 +3,8 @@
 import { App, SuggestModal } from 'obsidian';
 import { PetView } from './PetView';
 import { PetSize } from './types';
-import { PET_COLOR_MAP } from './PetSuggestModal'; // Import the color map
+import { PET_COLOR_MAP } from './PetSuggestModal';
+import {NameInputModal} from "./NameInputModal"; // Import the color map
 
 export class ColorSuggestModal extends SuggestModal<string> {
 	view: PetView;
@@ -31,11 +32,7 @@ export class ColorSuggestModal extends SuggestModal<string> {
 
 	// Called when the user clicks a color
 	onChooseSuggestion(color: string, evt: MouseEvent | KeyboardEvent) {
-		const plugin = (this.app as any).plugins.plugins['obsidian-pets'];
-		if (plugin) {
-			const petSize = plugin.settings.petSize as PetSize;
-			// This is the final step, spawn the pet with the chosen type AND color
-			this.view.spawnPet(this.petType, color, petSize);
-		}
+		this.close();
+		new NameInputModal(this.app, this.view, this.petType, color).open();
 	}
 }

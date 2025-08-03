@@ -9,6 +9,7 @@ export class Pet {
 	petType: string;
 	petColor: string;
 	petSize: PetSize;
+	name: string;
 
 	currentState: PetState = PetState.idle;
 	private speed: number;
@@ -17,12 +18,14 @@ export class Pet {
 
 	private stateChangeTimer = 0;
 
-	constructor(app: App, petType: string, petColor: string, petSize: PetSize) {
+	constructor(app: App, petType: string, petColor: string, petSize: PetSize, name: string) {
 		this.app = app;
 		this.petType = petType;
 		this.petColor = petColor;
 		this.petSize = petSize;
+		this.name = name;
 		this.position = { x: 50, y: 0 };
+
 
 		switch (this.petSize) {
 			case PetSize.nano: this.speed = 1.0; break;
@@ -128,6 +131,7 @@ export class Pet {
 		this.el.style.bottom = '0px';
 		this.el.style.width = `${size}px`;
 		this.el.style.height = `${size}px`;
+		this.el.setAttribute('title', this.name);
 
 		this.position.x = container.offsetWidth / 2;
 		this.updateSprite();

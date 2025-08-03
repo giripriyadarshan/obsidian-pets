@@ -6,6 +6,7 @@ import { PetSize } from "./types";
 import { Ball } from "./ball";
 import {PetSuggestModal} from "./PetSuggestModal";
 
+import { PET_NAMES } from './names';
 export const PET_VIEW_TYPE = "pet-view";
 
 export class PetView extends ItemView {
@@ -42,8 +43,8 @@ export class PetView extends ItemView {
 	};
 
 	// This now adds a new pet to our array
-	spawnPet(type: string, color: string, size: PetSize) {
-		const newPet = new Pet(this.app, type, color, size);
+	spawnPet(type: string, color: string, size: PetSize, name: string) {
+		const newPet = new Pet(this.app, type, color, size, name);
 		this.pets.push(newPet);
 		newPet.spawn(this.contentEl);
 	}
@@ -51,7 +52,8 @@ export class PetView extends ItemView {
 	// New method to clear all pets and spawn a new default one
 	resetAndSpawnPet(type: string, color: string, size: PetSize) {
 		this.clearAllPets();
-		this.spawnPet(type, color, size);
+		const randomName = PET_NAMES[Math.floor(Math.random() * PET_NAMES.length)];
+		this.spawnPet(type, color, size, randomName);
 	}
 
 	// New method to clear all pets from the view
@@ -161,7 +163,8 @@ export class PetView extends ItemView {
 		const plugin = (this.app as any).plugins.plugins['obsidian-pets'];
 		if (plugin) {
 			this.applyTheme(plugin.settings.theme);
-			this.spawnPet(plugin.settings.petType, plugin.settings.petColor, plugin.settings.petSize as PetSize);
+			const randomName = PET_NAMES[Math.floor(Math.random() * PET_NAMES.length)];
+			this.spawnPet(plugin.settings.petType, plugin.settings.petColor, plugin.settings.petSize as PetSize, randomName);
 		}
 
 		this.animationFrameId = window.requestAnimationFrame(this.gameLoop);
