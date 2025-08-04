@@ -1,7 +1,7 @@
 {
-	"id": "obsidian-pets",
-	"name": "Obsidian Pets",
-	"version": "1.0.1",
+	"id": "vault-pets",
+	"name": "Vault Pets",
+	"version": "1.0.2",
 	"minAppVersion": "1.1.9",
 	"description": "Direct translation of vscode-pets to Obsidian. Adds a cute pet to your Obsidian vault that follows you around.",
 	"author": "Priyadarshan Giri",

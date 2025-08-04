@@ -43,7 +43,7 @@ export class Pet {
 	}
 
 	private getAssetPath(asset: string): string {
-		const pluginId = 'obsidian-pets';
+		const pluginId = 'vault-pets';
 		const plugin = (this.app as any).plugins.getPlugin(pluginId);
 		if (!plugin) return '';
 		return this.app.vault.adapter.getResourcePath(

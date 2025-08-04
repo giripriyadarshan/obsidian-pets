@@ -33,7 +33,7 @@ export class NameInputModal extends Modal {
 					.setCta()
 					.onClick(() => {
 						this.close();
-						const plugin = (this.app as any).plugins.plugins['obsidian-pets'];
+						const plugin = (this.app as any).plugins.plugins['vault-pets'];
 						if (plugin) {
 							const petSize = plugin.settings.petSize as PetSize;
 							// Use the entered name, or a default if empty

@@ -26,7 +26,7 @@ export class PetView extends ItemView {
 		const viewWidth = this.contentEl.offsetWidth;
 		const viewHeight = this.contentEl.offsetHeight;
 
-		const plugin = (this.app as any).plugins.plugins['obsidian-pets'];
+		const plugin = (this.app as any).plugins.plugins['vault-pets'];
 		const theme = plugin.settings.theme;
 		const petSize = plugin.settings.petSize as PetSize;
 		const floorPercentString = THEME_FLOOR_MAP[theme]?.[petSize] ?? '0%';
@@ -63,7 +63,7 @@ export class PetView extends ItemView {
 	}
 
 	spawnPet(type: string, color: string, size: PetSize, name: string) {
-		const plugin = (this.app as any).plugins.plugins['obsidian-pets'];
+		const plugin = (this.app as any).plugins.plugins['vault-pets'];
 		const theme = plugin.settings.theme;
 		const floor = THEME_FLOOR_MAP[theme]?.[size] ?? '0%';
 		const newPet = new Pet(this.app, type, color, size, name, floor);
@@ -92,7 +92,7 @@ export class PetView extends ItemView {
 		if (this.ball) {
 			this.ball.remove();
 		}
-		const plugin = (this.app as any).plugins.plugins['obsidian-pets'];
+		const plugin = (this.app as any).plugins.plugins['vault-pets'];
 		const petSize = plugin.settings.petSize as PetSize;
 		this.ball = new Ball(this.app, this.contentEl.offsetWidth / 2, this.contentEl.offsetHeight / 2, petSize);
 		this.ball.spawn(this.contentEl);
@@ -112,7 +112,7 @@ export class PetView extends ItemView {
 			else { size = PetSize.large; }
 
 			const backgroundUrl = this.app.vault.adapter.getResourcePath(
-				`${(this.app as any).plugins.plugins['obsidian-pets'].app.vault.configDir}/plugins/obsidian-pets/media/backgrounds/${theme}/background-${themeKind}-${size}.png`
+				`${(this.app as any).plugins.plugins['vault-pets'].app.vault.configDir}/plugins/vault-pets/media/backgrounds/${theme}/background-${themeKind}-${size}.png`
 			);
 
 			this.contentEl.style.backgroundImage = `url('${backgroundUrl}')`;
@@ -154,7 +154,7 @@ export class PetView extends ItemView {
 		setIcon(addButton, 'plus');
 		addButton.addEventListener('click', () => new PetSuggestModal(this.app, this).open());
 
-		const plugin = (this.app as any).plugins.plugins['obsidian-pets'];
+		const plugin = (this.app as any).plugins.plugins['vault-pets'];
 		if (plugin) {
 			this.applyTheme(plugin.settings.theme);
 			if (this.pets.length === 0) {
